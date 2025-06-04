@@ -92,16 +92,26 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oj9-ix-gUJ">
+                                <rect key="frame" x="8" y="781.66666666666663" width="377" height="20.333333333333371"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="oj9-ix-gUJ" secondAttribute="bottom" constant="16" id="Y2y-hM-6DP"/>
                             <constraint firstItem="Adg-vh-xHl" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Zge-eF-KmX"/>
                             <constraint firstItem="Adg-vh-xHl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="e3O-p5-2NB"/>
                             <constraint firstItem="Adg-vh-xHl" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="nFT-bo-esj"/>
+                            <constraint firstItem="oj9-ix-gUJ" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="nHg-gx-Nc1"/>
+                            <constraint firstItem="oj9-ix-gUJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="wyO-Jh-s69"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="lblState" destination="oj9-ix-gUJ" id="sbu-zO-tyO"/>
                         <outlet property="tfText" destination="OQN-ad-kFA" id="ewV-O5-5a5"/>
                     </connections>
                 </viewController>

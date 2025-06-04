@@ -3,14 +3,15 @@ import CoreBluetooth
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var tfText: UITextField!
+    @IBOutlet private weak var tfText: UITextField!
+    @IBOutlet private weak var lblState: UILabel!
     
     private var peripheralManager: CBPeripheralManager? // Service
     private var transferCharacteristic: CBMutableCharacteristic? // Chuyển dữ liệu
     private var transferCharacteristicLED: CBMutableCharacteristic? // Điều khiển LED
-    let serviceUUID = CBUUID(string: "1234")
-    let characteristicUUID = CBUUID(string: "ABCD")
-    let characteristicUUIDLed = CBUUID(string: "CDEF")// Nhớ mã này gồm 4kí tự or là chuôix theo format giống này VD: 0000abcd-0000-1000-8000-00805f9b34fb
+    private let serviceUUID = CBUUID(string: "1234")
+    private let characteristicUUID = CBUUID(string: "ABCD")
+    private let characteristicUUIDLed = CBUUID(string: "CDEF")// Nhớ mã này gồm 4kí tự or là chuôix theo format giống này VD: 0000abcd-0000-1000-8000-00805f9b34fb
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,24 +30,24 @@ class ViewController: UIViewController {
     
     @IBAction func actionRedLed(_ sender: Any) {
         // Điều khiển LED đỏ
-        signal("RED_LED")
+        signal(.red)
     }
     
     @IBAction func actionBlueLed(_ sender: Any) {
         // Điều khiển LED xanh
-        signal("BLUE_LED")
+        signal(.blue)
     }
     
     @IBAction func actionOrangeLed(_ sender: Any) {
         // Điều khiển LED cam
-        signal("ORANGE_LED")
+        signal(.orange)
     }
     
     private func configService() {
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
     }
     
-    private func signal(_ message: String) {
+    private func signal(_ led: LedType) {
         guard let characteristic = transferCharacteristicLED,
               let peripheralManager = peripheralManager,
               peripheralManager.isAdvertising else {
@@ -54,7 +55,7 @@ class ViewController: UIViewController {
             return
         }
         
-        let data = message.data(using: .utf8)!
+        let data = led.rawValue.data(using: .utf8)!
         
         // Gửi dữ liệu qua characteristic
         let success = peripheralManager.updateValue(
@@ -64,7 +65,6 @@ class ViewController: UIViewController {
         )
         
         if success {
-//            alert(title: "Success", message: "Sent: \(message)")
             print("Success")
         } else {
             alert(message: "Send failed")
@@ -112,6 +112,7 @@ class ViewController: UIViewController {
 
 extension ViewController: CBPeripheralManagerDelegate {
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
+        //Kiểm tra xem đang có mở thiết bị ngoại vi
         if peripheral.state == .poweredOn {
             
             // Tạo Characteristic cho dữ liệu
@@ -145,4 +146,18 @@ extension ViewController: CBPeripheralManagerDelegate {
             print("Peripheral state: \(peripheral.state.rawValue)")
         }
     }
+    
+    func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didSubscribeTo characteristic: CBCharacteristic) {
+        lblState.text = "Connected to: \(central.identifier)"
+    }
+    
+    func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFrom characteristic: CBCharacteristic) {
+        lblState.text = "Disconnected from: \(central.identifier)"
+    }
+}
+
+enum LedType: String {
+    case red = "RED_LED"
+    case blue = "BLUE_LED"
+    case orange = "ORANGE_LED"
 }
